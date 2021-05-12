@@ -32,16 +32,16 @@ function SetupWrapper({ child1, child2 }) {
       
       <Grid
         container
-        spacing={8}
+        spacing={4}
         direction="column"
         alignItems="center"
         justify="center"
         style={{ minHeight: '100vh', width: '100%' }}
       > 
-        <Grid item xs={6} style={{width: '50%'}}>
+        <Grid item lg={6} md={6} sm={12} style={{margin: "0 auto", width: '100%'}}>
           {child1}
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={12}>
           {child2} 
         </Grid>
       </Grid>

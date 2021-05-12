@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react"
 import { useDispatch, useSelector, useStore } from "react-redux"
 import axios from 'axios'
-
+import Helpers from '../helpers/Helpers'
 import NavBar from './NavBar'
-import RankingSetup from "./RankingSetup"
 import allActions from "../store/actions"
 import { GOOGLE_API_KEY, GOOGLE_CUSTOMSEARCH_ENGINE_ID } from "../store/constants/actionTypes"
 import { Button, Divider, Typography } from "@material-ui/core"
@@ -39,7 +38,9 @@ function HotelSearch() {
             console.log(results)
 
             if (results === null) {
-
+                dispatch(allActions.currentHotelAction.resetHotel());
+                history.replace({pathname:'/setup/hotel', state: { error: "No Hotel Found!" }});
+                return;
             }
     
             if (results.length === 1) {
@@ -53,8 +54,15 @@ function HotelSearch() {
                     address: results[0].formatted_address,
                     rating: results[0].rating
                 }
+                
                 dispatch(allActions.currentHotelAction.setHotel(hotel))
-                history.push('/setup/hotel/ranking')
+                const result = store.getState().currentCity.hotels.find(data => Helpers.compareStrings(data.name, hotel.name))
+                if (result == undefined) {
+                    history.push('/setup/hotel/ranking')
+                } else {
+                    history.push('/data/' + store.getState().currentCountry.name + '/' + store.getState().currentCity.name + '/' + store.getState().currentHotel.name);   
+                }
+                
             } 
 
             results.forEach(async (hotel) => {
@@ -97,8 +105,14 @@ function HotelSearch() {
     }, [])
 
     function handleHotelPick(hotel) {
-        dispatch(allActions.currentHotelAction.setHotel(hotel))
-        history.push('/setup/hotel/ranking')
+        const result = store.getState().currentCity.hotels.find(data => Helpers.compareStrings(data.name, hotel.name))
+        if (result === undefined) {
+            dispatch(allActions.currentHotelAction.setHotel(hotel))
+            history.push('/setup/hotel/ranking')
+        } else {
+            dispatch(allActions.currentHotelAction.setHotel(result))
+            history.push('/data/' + store.getState().currentCountry.name + '/' + store.getState().currentCity.name + '/' + store.getState().currentHotel.name);
+        }
     }
 
     return (

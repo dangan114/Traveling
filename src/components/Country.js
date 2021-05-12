@@ -14,11 +14,6 @@ function Country(props) {
     const dispatch = useDispatch()
     const history = useHistory()
 
-    useEffect(() => {
-        
-    }, [])
-
-
     function handleHotelNavigation(hotel, city) {
         dispatch(allActions.currentHotelAction.setHotel(hotel))
         dispatch(allActions.currentCityAction.setCity(city))
@@ -32,7 +27,7 @@ function Country(props) {
             <div style={{margin: '5vh 0', textAlign: 'center'}}>
                 <Button onClick={() => handleAddHotel(city)} style={{margin: '0 2vw'}} variant="contained" color='default'>Add Hotel</Button>
             </div>    
-                <div style={{width: '100%'}}>
+                <div>
                     <Grid container spacing={3}>
                         {hotelsDisplay(city)}
                     </Grid>
@@ -44,7 +39,7 @@ function Country(props) {
     function hotelsDisplay(city) {
         return city.hotels.map(hotel => { 
             return (
-                <Grid item xs={3}>
+                <Grid style={{margin: '0 auto'}} item lg={3} md={3} sm={12}>
                     {hotelCard(hotel, city)}
                 </Grid>
             )
@@ -67,16 +62,11 @@ function Country(props) {
 
     function hotelCard(hotel, city) {
        return (
-           <Card style={{height: "100%"}} raised>
+           <Card onClick={() => handleHotelNavigation(hotel, city)} style={{height: "100%"}} raised>
                <CardHeader
                 avatar={<Avatar>{hotel.rating}</Avatar>}
                 title={hotel.name}
                 subheader={Helpers.rankingDisplay(hotel.ranking)}
-                action={
-                    <IconButton onClick={() => handleHotelNavigation(hotel, city)}>
-                        <MoreVert />
-                    </IconButton>
-                }
                 >
                </CardHeader>  
 

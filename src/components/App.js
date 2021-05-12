@@ -9,14 +9,17 @@ import City from './City';
 import CountrySetup from './CountrySetup';
 import Country from './Country';
 import HotelSearch from './HotelSearch';
+import Feedback from './Feedback';
 
 function App() {
   return (
-    <main style={{margin: '5vh 2vw'}}>
+    <main>
       <Switch>
         <Route exact path="/">
-          <Redirect to="/setup/country"/>
+          <Redirect to="/data"/>
         </Route> 
+
+        <Route path="/feedback" component={Feedback} />
 
         <Route path="/setup/country" component={CountrySetup} />
         <Route path="/setup/city" component={CitySetup} />

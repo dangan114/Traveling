@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Divider, Typography, GridList, GridListTile, Button } from '@material-ui/core/';
 // import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -50,8 +50,30 @@ const useStyles = makeStyles((theme) => ({
 export default function ImageDisplay(props) {
   const classes = useStyles();
 
+  let [width, setWidth] = useState(0)
+
+  useEffect(() => {
+      function handleResize() {
+          setWidth(window.innerWidth)
+      }
+
+      window.addEventListener('resize', handleResize);
+
+      handleResize();
+
+  }, [width])
+
+  function imageSpacing() {
+      var width = window.innerWidth; 
+      if (width >= 400) {
+          return 2.5;
+      } else {
+          return 1; 
+      }
+  }
+
   return (
-            <GridList className={classes.gridList} cols={2.5}>
+            <GridList className={classes.gridList} cols={imageSpacing()}>
                 {props.images.map((image) => (
                 <GridListTile key={image} style={{ height: '50vh' }}>
                     <img src={image} />

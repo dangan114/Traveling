@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 const navLinks = [
     { title: `All`, path: `/data` },
     { title: `Search`, path: `/setup/country` },
-    { title: `About Us`, path: `/about-us` },
+    { title: `Feedback`, path: `/feedback` },
   ]
 
 function NavBar() {

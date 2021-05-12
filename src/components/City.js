@@ -1,10 +1,11 @@
-import { Divider, Typography, GridList, GridListTile, makeStyles, Button } from "@material-ui/core";
+import { Divider, Typography, GridList, GridListTile, makeStyles, Button, Grid } from "@material-ui/core";
 import { Star, StarBorder } from '@material-ui/icons'
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import { useHistory } from "react-router";
 import Helpers from "../helpers/Helpers";
 import allActions from "../store/actions";
+import ImageDisplay from "./ImageDisplay";
 import NavBar from "./NavBar";
 
 
@@ -38,6 +39,18 @@ function City(props) {
     var dispatch = useDispatch()
     var history = useHistory()
 
+    let [width, setWidth] = useState(0)
+
+    useEffect(() => {
+        function handleResize() {
+            setWidth(window.innerWidth)
+        }
+
+        window.addEventListener('resize', handleResize);
+
+        handleResize();
+
+    }, [width])
 
     function handleChangeLocation() {
         dispatch(allActions.currentCityAction.resetCity())
@@ -48,6 +61,15 @@ function City(props) {
     function handleAddHotel() {
         dispatch(allActions.currentHotelAction.resetHotel())
         history.push('/setup/hotel')
+    }
+
+    function imageSpacing() {
+        var width = window.innerWidth; 
+        if (width >= 400) {
+            return 2.5;
+        } else {
+            return 1; 
+        }
     }
 
     const hotelsDisplay = store.getState().currentCity.hotels.map(hotel => 
@@ -63,13 +85,12 @@ function City(props) {
             <div style={{marginBottom: '4vh', textAlign: 'center'}}>
                 {Helpers.rankingDisplay(hotel.ranking)}
             </div>
-                    <GridList className={classes.gridList} cols={2.5}>
-                        {hotel.images.map((image) => (
-                        <GridListTile key={image} style={{ height: '50vh' }}>
-                            <img src={image} />
-                        </GridListTile>
-                        ))}
-                    </GridList>
+            <Grid container>
+                <Grid item xs={12}>
+                    <ImageDisplay images={hotel.images} />
+                </Grid>
+            </Grid>
+                    
                     
         </div>
     )

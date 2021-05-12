@@ -28,14 +28,28 @@ function Hotel(props) {
       'Test Test Test',
       'Test Test Test Test'
     ]
-  
+
+    let [width, setWidth] = useState(0)
+
     useEffect(() => {
-        if (currentHotel.name == props.match.params.hotel) {
-          console.log("Nope")
-        } else {
-          console.log("Yes")
+        function handleResize() {
+            setWidth(window.innerWidth)
         }
-    }, [])
+
+        window.addEventListener('resize', handleResize);
+
+        handleResize();
+
+    }, [width])
+
+    function imageSpacing() {
+        var width = window.innerWidth; 
+        if (width >= 400) {
+            return 2.5;
+        } else {
+            return 1; 
+        }
+    }
 
     const prosList = pros.map((pro, index) => {
       return <li key={index}>{pro}</li>

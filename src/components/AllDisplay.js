@@ -1,5 +1,5 @@
-import { Avatar, Card, CardHeader, CardMedia, Divider, Grid, IconButton, Typography, useTheme } from "@material-ui/core";
-import { More, MoreVert } from "@material-ui/icons";
+import { Box, Avatar, Card, CardHeader, CardMedia, Divider, Grid, IconButton, Typography, useTheme } from "@material-ui/core";
+import { MoreVert, PlusOne } from "@material-ui/icons";
 import { useEffect, useState } from "react";
 import { useDispatch, useStore } from "react-redux";
 import { useHistory } from "react-router";
@@ -7,6 +7,7 @@ import { dbAddLocation, dbGetAllLocations } from "../data/dexie";
 import Helpers from "../helpers/Helpers";
 import allActions from "../store/actions";
 import NavBar from "./NavBar";
+import NoDisplayDialog from "./NoDisplayDialog";
 
 function AllDisplay() {
 
@@ -16,7 +17,7 @@ function AllDisplay() {
     const dispatch = useDispatch()
     const history = useHistory()
 
-    useEffect(() => {
+    useEffect(() => {   
         dbGetAllLocations().then(data => {
             setLocations(data)
         })
@@ -33,11 +34,11 @@ function AllDisplay() {
         return locations.map(location => {
             return (
                 <div>
-                <Grid style={{margin: '5vh 0'}} container spacing={3}>
+                <Grid container style={{margin: '5vh 0'}} spacing={3}>
                     <Grid item xs={12}>
                         <Typography style={{fontWeight: 'bold', fontFamily: '"DejaVu Sans Mono", monospace'}} variant="h2" component="legend">{location.name}</Typography>
                     </Grid>
-                    <Grid style={{}} item xs={12}>
+                    <Grid item xs={12}>
                         {citiesDisplay(location)}
                     </Grid>
                     
@@ -52,10 +53,12 @@ function AllDisplay() {
         return country.cities.map(city => {
             return (
                 <Grid style={{marginBottom: '8vh'}} container spacing={3}>
-                    <Grid item xs={12}>
+                    <Grid key={city.name} item xs={12}>
                         <Typography style={{textAlign: 'center', fontWeight: 'bold', fontFamily: '"DejaVu Sans Mono", monospace'}} variant="h4" component="legend">{city.name}</Typography>
                     </Grid>
-                        {hotelsDisplay(city, country)}
+              
+                    {hotelsDisplay(city, country)}
+                 
                 </Grid>
             )
         })
@@ -64,16 +67,16 @@ function AllDisplay() {
     function hotelsDisplay(city, country) {
         return city.hotels.map(hotel => { 
             return (
-                <Grid item xs={3}>
+                <Grid key={hotel.name} item lg={3} md={4} sm={12}>
                     {hotelCard(hotel, city, country)}
-                </Grid>
+                </Grid>     
             )
         })   
     }
 
     function hotelCard(hotel, city, country) {
        return (
-           <Card onClick={() => handleIconClick(hotel, city, country)} style={{height: "100%"}} raised>
+           <Card onClick={() => handleIconClick(hotel, city, country)} style={{width: '40vh'}} raised>
                <CardHeader
                 avatar={<Avatar>{hotel.rating}</Avatar>}
                 title={hotel.name}
@@ -88,7 +91,7 @@ function AllDisplay() {
 
                <CardMedia
                     component="img"
-                    height='300' 
+                    height="300" 
                     src ={hotel.thumbnail}
                     title={hotel.name}
                 />     
@@ -96,14 +99,23 @@ function AllDisplay() {
        ) 
     }
 
+    function noDiplayCheck() {
+        if (locations.length !== 0) {
+            return (
+                <div style={{textAlign: 'center'}}>
+                    {locationsDisplay(locations)}
+                </div>
+            )
+        } else {
+            return <NoDisplayDialog />
+        }
+    }
 
     return (
         <div>
             <NavBar />
 
-            <div style={{textAlign: 'center'}}>
-                {locationsDisplay(locations)}
-            </div>
+            {noDiplayCheck()}
         </div>
     )
 }

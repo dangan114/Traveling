@@ -5,7 +5,7 @@ import { useDispatch, useStore } from 'react-redux'
 import allActions from '../store/actions'
 import Helpers from '../helpers/Helpers'
 
-function HotelInput() {
+function HotelInput(props) {
   
      // Redux Stuff
     var store = useStore()
@@ -16,6 +16,9 @@ function HotelInput() {
     const history = useHistory()
 
     useEffect(() => {
+
+        console.log(props.error)
+
         if (store.getState().currentHotel.name !== "") {
             dispatch(allActions.currentHotelAction.resetHotel())
         }
@@ -25,14 +28,19 @@ function HotelInput() {
         event.preventDefault()
 
         dispatch(allActions.currentHotelAction.setHotelName(hotel))
+        history.push('/setup/hotel/search')
+       
+    }
 
-        const result = store.getState().currentCity.hotels.find(data => Helpers.compareStrings(data.name, hotel))
-        
-        if (result === undefined) {
-            history.push('/setup/hotel/search')
+    function helperTextDisplay() {
+        if (props.error === '') {
+            return (
+                <FormHelperText id="my-helper-text">Share with us your recently visited hotel</FormHelperText>
+            )
         } else {
-            dispatch(allActions.currentHotelAction.setHotel(result))
-            history.push('/data/hotel/' + store.getState().currentLocation.city + '/' + store.getState().currentHotel.name);
+            return (
+                <FormHelperText error id="my-helper-text">{props.error}</FormHelperText>
+            )
         }
     }
     
@@ -41,7 +49,7 @@ function HotelInput() {
             <FormControl>
                 <InputLabel htmlFor="location-input">Hotel</InputLabel>
                 <Input type="text" id="location-input" aria-describedby="my-helper-text" onChange={e => setHotel(e.target.value)} />
-                <FormHelperText id="my-helper-text">Share with us your recently visited hotel</FormHelperText>
+                {helperTextDisplay()}
                 <Button type="submit" color="primary">Submit</Button>
             </FormControl>
         </form>
